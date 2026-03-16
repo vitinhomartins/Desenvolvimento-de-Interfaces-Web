@@ -3,6 +3,21 @@ body{
     background-color: #f5f1e6;
     color: #3e2c23;
     margin: 40px;
+    background-image: url(/currículo/imgs/72133-best-beige-background-3300x2550.jpg);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.cabecalho{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+img{
+    width: 150px;
+    border-radius: 10px;
 }
 
 #curriculo-title{
