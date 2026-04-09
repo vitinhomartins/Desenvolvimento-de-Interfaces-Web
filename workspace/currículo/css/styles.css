@@ -1,3 +1,7 @@
+html{
+    font-size: 62.5%;
+}
+
 body{
     font-family: 'Courier New', Courier, monospace;
     background-color: #f5f1e6;
@@ -5,9 +9,13 @@ body{
     background-image: url(/currículo/imgs/72133-best-beige-background-3300x2550.jpg);
     background-attachment: fixed;
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: cover;
+
+    width: 90vw;
     max-width: 1000px;
-    margin: 40px auto;
+    min-height: 100vh;
+
+    margin: 5vh auto;
 }
 
 .cabecalho{
@@ -17,7 +25,8 @@ body{
 }
 
 img{
-    width: 150px;
+    width: 12rem;
+    max-width: 15vw;
     border-radius: 10px;
 }
 
@@ -34,53 +43,57 @@ img{
 h2{
     color: #6b3e26;
     border-bottom: 2px solid #d6c3a3;
-    padding-bottom: 3px;
+    padding-bottom: 0.3em;
+    font-size: 2rem;
 }
 
 p{
-    margin: 4px 0;
+    margin: 0.4em 0;
+    font-size: 1.6rem;
 }
 
 ul{
-    margin-top: 5px;
+    margin-top: 0.5em;
 }
 
 li{
-    margin-bottom: 4px;
+    margin-bottom: 0.4em;
+    font-size: 1.3em;
+    letter-spacing: 0.1rem;
 }
 
 hr{
     border: none;
     border-top: 1px solid #d6c3a3;
-    margin: 15px 0;
+    margin: 1.5em 0;
 }
 
 #copyright{
     text-align: center;
-    margin-top: 30px;
-    font-size: 12px;
+    margin-top: 3vh;
+    font-size: 1.2em;
     color: #7a5a4a;
 }
 
 header {
-    margin-bottom: 20px;
+    margin-bottom: 3vh;
 }
 
 .info-basica {
-    margin-top: 10px;
+    margin-top: 1em;
 }
 
 nav {
-    margin: 25px 0;
+    margin: 3vh 0;
     display: flex;
     justify-content: center;
 }
 
 .menu {
     display: flex;
-    gap: 12px;
+    gap: 1.5vw;
     list-style: none;
-    padding: 8px;
+    padding: 0.8em 2vw;
     background-color: rgba(255, 255, 255, 0.3);
     border-radius: 30px;
     backdrop-filter: blur(5px);
@@ -91,7 +104,7 @@ nav {
     text-decoration: none;
     color: #5a3b2e;
     font-weight: bold;
-    padding: 8px 16px;
+    padding: 0.5em 1.2em;
     border-radius: 20px;
     transition: all 0.3s ease;
 }
@@ -99,7 +112,7 @@ nav {
 .menu a:hover {
     background-color: #8b5a2b;
     color: #fff;
-    transform: translateY(-2px);
+    transform: translateY(-0.2rem);
 }
 
 .menu a:active {
@@ -107,24 +120,27 @@ nav {
 }
 
 main {
-    margin-top: 20px;
+    margin-top: 3vh;
 }
 
 section {
-    margin-bottom: 20px;
+    background: rgba(255,255,255,0.5);
+    padding: 1.5em;
+    border-radius: 12px;
+    margin-bottom: 2vh;
 }
 
 footer {
-    margin-top: 30px;
+    margin-top: 4vh;
 }
 
 .topo {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 900px;
+    max-width: 90vw;
     margin: 0 auto;
-    gap: 30px;
+    gap: 3vw;
 }
 
 .info {
@@ -132,9 +148,44 @@ footer {
 }
 
 .foto img {
-    width: 140px;
+    width: 12rem;
+    max-width: 18vw;
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.container{
+    display: flex;
+    gap: 3vw;
+}
+
+.sidebar{
+    width: 30%;
+    max-width: 30vw;
+    background-color: rgba(255,255,255,0.4);
+    padding: 2em;
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+}
+
+#habilidades ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8vw;
+    padding: 0;
+}
+
+#habilidades li {
+    list-style: none;
+    background: #8b5a2b;
+    color: white;
+    padding: 0.5em 1em;
+    border-radius: 10px;
+    font-size: 1.4em;
+}
+
+.conteudo{
+    width: 70%;
 }
 
 #curriculo-title {
@@ -143,5 +194,5 @@ footer {
 
 #nome {
     text-align: left;
-    margin-bottom: 10px;
+    margin-bottom: 1em;
 }
