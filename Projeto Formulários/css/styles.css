@@ -1,57 +1,55 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%; 
+  font-family: Arial, sans-serif;
 }
 
 body {
-  height: 100vh;
+  min-height: 100vh;
   background: linear-gradient(135deg, #e5e5e5, #f2f2f2);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+
 .container {
-  width: 100%;
-  max-width: 400px;
+  width: 90%;
+  max-width: 40rem; 
 }
 
 .card {
   background: #f7f7f7;
-  padding: 40px 30px;
-  border-radius: 20px;
+  padding: 4rem 3rem;
+  border-radius: 2rem;
   text-align: center;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-
-.avatar {
-  width: 70px;
-  height: 70px;
-  border: 3px solid #999;
-  border-radius: 50%;
-  margin: 0 auto 15px;
+  box-shadow: 0 1rem 2.5rem rgba(0,0,0,0.1);
 }
 
 h2 {
-    justify-content: start;
-    margin-bottom: 25px;
+  text-align: left;
+  font-size: 2.2rem;
+  margin-bottom: 2.5rem;
+  color: #333;
 }
 
 .input-group {
-    display: flex;
-    align-items: center;
-    background: #eee;
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 15px;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  background: #eee;
+  border-radius: 1rem;
+  padding: 1.2rem;
+  margin-bottom: 2rem;
+  gap: 1rem;
 }
 
-.icon {
-  margin-right: 10px;
-  color: #666;
+.input-group span {
+  font-size: 1.6rem;
 }
 
 .input-group input {
@@ -59,38 +57,41 @@ h2 {
   background: transparent;
   outline: none;
   width: 100%;
-  font-size: 14px;
-}
-
-.forgot {
-  display: block;
-  text-align: left;
-  font-size: 13px;
-  color: #0941ea;
-  font-weight: bolder;
-  margin-bottom: 20px;
-  text-decoration: none;
+  font-size: 1.4rem;
 }
 
 .btn {
   width: 100%;
-  padding: 12px;
+  padding: 1.4rem;
+  margin: 2rem 0;
   border: none;
-  border-radius: 10px;
+  border-radius: 1rem;
   background: linear-gradient(90deg, #3b6edc, #2d5be3);
   color: white;
-  font-size: 16px;
+  font-size: 1.6rem;
   cursor: pointer;
-  margin-bottom: 15px;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+  margin-top: 1rem;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
 }
 
 .btn:hover {
   opacity: 0.9;
 }
 
+.forgot {
+  display: block;
+  text-align: left;
+  font-size: 1.3rem;
+  color: #0941ea;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-decoration: none;
+  margin: 1rem 0 2.5rem;
+}
+
 .register {
-  font-size: 14px;
+  font-size: 1.4rem;
+  margin-top: 1rem;
 }
 
 .register a {
@@ -102,11 +103,19 @@ h2 {
 .grid-1 {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 15px;
+  gap: 1.5rem;
 }
 
 .grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  gap: 1.5rem;
+}
+
+.avatar {
+  width: 70px;
+  height: 70px;
+  border: 3px solid #999;
+  border-radius: 50%;
+  margin: 0 auto 2.5rem;
 }
