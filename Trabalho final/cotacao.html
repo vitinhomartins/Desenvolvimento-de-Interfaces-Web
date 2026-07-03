@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard de Cotações</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg: #eef5f9;
+            --card: #ffffff;
+            --primary: #0f766e;
+            --primary-dark: #115e59;
+            --accent: #38bdf8;
+            --text: #1f2937;
+            --muted: #64748b;
+            --border: #dbeafe;
+            --green: #16a34a;
+            --red: #dc2626;
+            --yellow: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #e0f2fe, #ccfbf1);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .container {
+            width: min(1200px, 94%);
+            margin: 0 auto;
+            padding: 28px 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 30px;
+            color: #0f172a;
+        }
+
+        .header p {
+            margin: 6px 0 0;
+            color: var(--muted);
+        }
+
+        .status-box {
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px 16px;
+            text-align: right;
+            min-width: 230px;
+        }
+
+        .status-box span {
+            display: block;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .status-box strong {
+            font-size: 15px;
+        }
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+
+        .currency-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .currency-card::after {
+            content: "";
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            right: -45px;
+            top: -45px;
+            background: rgba(56, 189, 248, 0.18);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .currency-name {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .currency-value {
+            font-size: 25px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .variation {
+            font-size: 13px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .positive {
+            color: var(--green);
+            background: #dcfce7;
+        }
+
+        .negative {
+            color: var(--red);
+            background: #fee2e2;
+        }
+
+        .neutral {
+            color: var(--muted);
+            background: #f1f5f9;
+        }
+
+        .small-info {
+            margin-top: 14px;
+            color: var(--muted);
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 0.9fr;
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .section-title h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        select, button {
+            border: none;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 14px;
+        }
+
+        select {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: var(--text);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .btn-secondary:hover {
+            background: #bae6fd;
+        }
+
+        .btn-favorite {
+            width: 100%;
+            margin-top: 12px;
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .chart-wrapper {
+            height: 350px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 13px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--muted);
+            background: #f8fafc;
+            font-size: 13px;
+        }
+
+        td strong {
+            color: #0f172a;
+        }
+
+        .favorite-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .favorite-item {
+            padding: 8px 10px;
+            border-radius: 999px;
+            background: #ecfeff;
+            color: #155e75;
+            border: 1px solid #a5f3fc;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .compare-box {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 14px;
+            margin-top: 14px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .compare-box p {
+            margin: 6px 0;
+            color: var(--muted);
+        }
+
+        .compare-box strong {
+            color: #0f172a;
+        }
+
+        .loader {
+            display: none;
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .error {
+            display: none;
+            margin-top: 12px;
+            color: var(--red);
+            background: #fee2e2;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 850px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .status-box {
+                width: 100%;
+                text-align: left;
+            }
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-wrapper {
+                height: 290px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <header class="header">
+            <div>
+                <h1>Dashboard de Cotações</h1>
+                <p>Acompanhe moedas e criptomoedas com histórico, comparação e favoritos.</p>
+            </div>
+            <div class="status-box">
+                <span>Última atualização</span>
+                <strong id="ultimaAtualizacao">Carregando...</strong>
+            </div>
+        </header>
+
+        <section class="grid-cards" id="cardsResumo"></section>
+
+        <section class="main-grid">
+            <div class="card">
+                <div class="section-title">
+                    <h2>Histórico</h2>
+                    <div class="filters">
+                        <select id="moedaGrafico">
+                            <option value="USD-BRL">Dólar Americano</option>
+                            <option value="EUR-BRL">Euro</option>
+                            <option value="GBP-BRL">Libra Esterlina</option>
+                            <option value="JPY-BRL">Iene Japonês</option>
+                            <option value="CAD-BRL">Dólar Canadense</option>
+                            <option value="AUD-BRL">Dólar Australiano</option>
+                            <option value="CHF-BRL">Franco Suíço</option>
+                            <option value="ARS-BRL">Peso Argentino</option>
+                            <option value="BTC-BRL">Bitcoin</option>
+                            <option value="ETH-BRL">Ethereum</option>
+                            <option value="LTC-BRL">Litecoin</option>
+                        </select>
+
+                        <select id="periodoGrafico">
+                            <option value="7">7 dias</option>
+                            <option value="15" selected>15 dias</option>
+                            <option value="30">30 dias</option>
+                        </select>
+
+                        <button onclick="carregarHistorico()">Atualizar gráfico</button>
+                    </div>
+                </div>
+
+                <div class="chart-wrapper">
+                    <canvas id="graficoHistorico"></canvas>
+                </div>
+
+                <div class="loader" id="loaderGrafico">Buscando histórico...</div>
+                <div class="error" id="erroGrafico">Não foi possível carregar o gráfico.</div>
+            </div>
+
+    <aside class="card">
+        <h2>Comparativo</h2>
+        <p style="color: var(--muted); margin-top: 0;">
+            Compare o valor atual com o início do período selecionado.
+        </p>
+
+        <button class="btn-favorite" onclick="alternarFavorito()">
+             Adicionar/remover favorito
+        </button>
+
+        <div class="compare-box" id="boxComparativo">
+            <p>Selecione uma moeda e carregue o gráfico para ver o comparativo.</p>
+        </div>
+        </section>
+
+        <section class="card" style="margin-top: 18px;">
+            <div class="section-title">
+                <h2>Tabela de cotações</h2>
+                <button onclick="carregarDashboard()">Atualizar agora</button>
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Moeda</th>
+                            <th>Compra</th>
+                            <th>Venda</th>
+                            <th>Máxima</th>
+                            <th>Mínima</th>
+                            <th>Variação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaCotacoes"></tbody>
+                </table>
+            </div>
+
+            <div class="loader" id="loaderTabela">Atualizando cotações...</div>
+            <div class="error" id="erroTabela">Erro ao buscar cotações. Tente novamente.</div>
+        </section>
+    </main>
+
+    <script>
+        const moedasResumo = ["USD-BRL", "EUR-BRL", "BTC-BRL", "ETH-BRL"];
+        const moedasTabela = [
+            "USD-BRL", "EUR-BRL", "GBP-BRL", "JPY-BRL", "CAD-BRL", "AUD-BRL", "CHF-BRL", "ARS-BRL", "BTC-BRL", "ETH-BRL", "LTC-BRL"
+        ];
+
+        let grafico = null;
+        let historicoAtual = [];
+        let favoritos = JSON.parse(localStorage.getItem("favoritosCotacao")) || ["USD-BRL", "BTC-BRL"];
+
+        function formatarReal(valor) {
+            return Number(valor).toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+            });
+        }
+
+        function formatarData(timestamp) {
+            const data = new Date(timestamp * 1000);
+            return data.toLocaleDateString("pt-BR", {
+                day: "2-digit",
+                month: "2-digit"
+            });
+        }
+
+        function formatarDataHoraAtual() {
+            return new Date().toLocaleString("pt-BR", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit"
+            });
+        }
+
+        function classeVariacao(valor) {
+            const numero = Number(valor);
+            if (numero > 0) return "positive";
+            if (numero < 0) return "negative";
+            return "neutral";
+        }
+
+        async function buscarCotacoes(pares) {
+            const url = `https://economia.awesomeapi.com.br/last/${pares.join(",")}`;
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error("Erro ao buscar cotações");
+            }
+
+            return response.json();
+        }
+
+        function renderizarCards(data) {
+            const container = document.getElementById("cardsResumo");
+            container.innerHTML = "";
+
+            moedasResumo.forEach(par => {
+                const chave = par.replace("-", "");
+                const item = data[chave];
+                if (!item) return;
+
+                const variacao = Number(item.pctChange).toFixed(2);
+
+                container.innerHTML += `
+                    <article class="card currency-card">
+                        <div class="card-top">
+                            <div>
+                                <div class="currency-name">${item.name}</div>
+                                <div class="currency-value">${formatarReal(item.bid)}</div>
+                            </div>
+                            <span class="variation ${classeVariacao(variacao)}">${variacao}%</span>
+                        </div>
+                        <div class="small-info">
+                            <span>Máx: ${formatarReal(item.high)}</span>
+                            <span>Mín: ${formatarReal(item.low)}</span>
+                        </div>
+                    </article>
+                `;
+            });
+        }
+
+        function renderizarTabela(data) {
+            const tbody = document.getElementById("tabelaCotacoes");
+            tbody.innerHTML = "";
+
+            moedasTabela.forEach(par => {
+                const chave = par.replace("-", "");
+                const item = data[chave];
+                if (!item) return;
+
+                const variacao = Number(item.pctChange).toFixed(2);
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${item.code}</strong><br><span style="color: var(--muted); font-size: 12px;">${item.name}</span></td>
+                        <td>${formatarReal(item.bid)}</td>
+                        <td>${formatarReal(item.ask)}</td>
+                        <td>${formatarReal(item.high)}</td>
+                        <td>${formatarReal(item.low)}</td>
+                        <td><span class="variation ${classeVariacao(variacao)}">${variacao}%</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function carregarDashboard() {
+            const loader = document.getElementById("loaderTabela");
+            const erro = document.getElementById("erroTabela");
+
+            loader.style.display = "block";
+            erro.style.display = "none";
+
+            try {
+                const data = await buscarCotacoes(moedasTabela);
+                renderizarCards(data);
+                renderizarTabela(data);
+                document.getElementById("ultimaAtualizacao").textContent = formatarDataHoraAtual();
+            } catch (error) {
+                erro.style.display = "block";
+                console.error(error);
+            } finally {
+                loader.style.display = "none";
+            }
+        }
+
+        async function carregarHistorico() {
+            const par = document.getElementById("moedaGrafico").value;
+            const periodo = document.getElementById("periodoGrafico").value;
+            const loader = document.getElementById("loaderGrafico");
+            const erro = document.getElementById("erroGrafico");
+
+            loader.style.display = "block";
+            erro.style.display = "none";
+
+            try {
+                const url = `https://economia.awesomeapi.com.br/json/daily/${par}/${periodo}`;
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error("Erro ao buscar histórico");
+                }
+
+                const data = await response.json();
+                historicoAtual = data.reverse();
+
+                const labels = historicoAtual.map(item => formatarData(item.timestamp));
+                const valores = historicoAtual.map(item => Number(item.bid));
+
+                const ctx = document.getElementById("graficoHistorico");
+
+                if (grafico) {
+                    grafico.destroy();
+                }
+
+                grafico = new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: `Cotação ${par}`,
+                            data: valores,
+                            tension: 0.35,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return formatarReal(context.raw);
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: function(value) {
+                                        return formatarReal(value);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                compararSelecionado();
+            } catch (error) {
+                erro.style.display = "block";
+                console.error(error);
+            } finally {
+                loader.style.display = "none";
+            }
+        }
+
+        function compararSelecionado() {
+            const box = document.getElementById("boxComparativo");
+            const par = document.getElementById("moedaGrafico").value;
+
+            if (!historicoAtual.length) {
+                box.innerHTML = "<p>Carregue o gráfico primeiro para comparar os valores.</p>";
+                return;
+            }
+
+            const primeiro = Number(historicoAtual[0].bid);
+            const ultimo = Number(historicoAtual[historicoAtual.length - 1].bid);
+            const diferenca = ultimo - primeiro;
+            const percentual = (diferenca / primeiro) * 100;
+            const classe = classeVariacao(diferenca);
+            const texto = diferenca > 0 ? "subiu" : diferenca < 0 ? "caiu" : "ficou estável";
+
+            box.innerHTML = `
+                <p><strong>${par}</strong> ${texto} no período.</p>
+                <p>Início: <strong>${formatarReal(primeiro)}</strong></p>
+                <p>Atual: <strong>${formatarReal(ultimo)}</strong></p>
+                <p>Diferença: <span class="variation ${classe}">${formatarReal(diferenca)} (${percentual.toFixed(2)}%)</span></p>
+            `;
+        }
+
+        function salvarFavoritos() {
+            localStorage.setItem("favoritosCotacao", JSON.stringify(favoritos));
+        }
+
+        function renderizarFavoritos() {
+            const lista = document.getElementById("listaFavoritos");
+            lista.innerHTML = "";
+
+            if (!favoritos.length) {
+                lista.innerHTML = "<p style='color: var(--muted);'>Nenhum favorito ainda.</p>";
+                return;
+            }
+
+            favoritos.forEach(par => {
+                lista.innerHTML += `<span class="favorite-item" onclick="selecionarFavorito('${par}')">${par}</span>`;
+            });
+        }
+
+        function alternarFavorito() {
+            const par = document.getElementById("moedaGrafico").value;
+
+            if (favoritos.includes(par)) {
+                favoritos = favoritos.filter(item => item !== par);
+            } else {
+                favoritos.push(par);
+            }
+
+            salvarFavoritos();
+            renderizarFavoritos();
+        }
+
+        function selecionarFavorito(par) {
+            document.getElementById("moedaGrafico").value = par;
+            carregarHistorico();
+        }
+
+        document.getElementById("moedaGrafico").addEventListener("change", carregarHistorico);
+        document.getElementById("periodoGrafico").addEventListener("change", carregarHistorico);
+
+        carregarDashboard();
+        carregarHistorico();
+        renderizarFavoritos();
+
+        // Atualiza automaticamente a tabela e os cards a cada 30 segundos.
+        setInterval(carregarDashboard, 30000);
+    </script>
+</body>
+</html>
